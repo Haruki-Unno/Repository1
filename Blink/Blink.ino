@@ -1,68 +1,177 @@
 /*
-  Blink
+  DigitalReadSerial
 
-  Turns an LED on for one second, then off for one second, repeatedly.
-
-  Most Arduinos have an on-board LED you can control. On the UNO, MEGA and ZERO
-  it is attached to digital pin 13, on MKR1000 on pin 6. LED_BUILTIN is set to
-  the correct LED pin independent of which board is used.
-  If you want to know what pin the on-board LED is connected to on your Arduino
-  model, check the Technical Specs of your board at:
-  https://docs.arduino.cc/hardware/
-
-  modified 8 May 2014
-  by Scott Fitzgerald
-  modified 2 Sep 2016
-  by Arturo Guadalupi
-  modified 8 Sep 2016
-  by Colby Newman
+  Reads a digital input on pin 2, prints the result to the Serial Monitor
 
   This example code is in the public domain.
 
-  https://docs.arduino.cc/built-in-examples/basics/Blink/
+  https://docs.arduino.cc/built-in-examples/basics/DigitalReadSerial/
 */
 
-const int rLEDpin = 11;
-const int gLEDpin = 9;
-const int bLEDpin = 10;
+// digital pin 2 has a pushbutton attached to it. Give it a name:
+int buttonPin = 2;
+int Rpin = 5;
+int Bpin = 4;
+int Gpin = 3;
 
-// the setup function runs once when you press reset or power the board
+int buttonState = 0;
+int ledState = LOW;
+int ledcolor = 0;
+bool ButtonPressed = false;
+String currentcolor = "led";
+
+unsigned long previousMillis = 0;
+const long interval = 1000;
+
+
+// the setup routine runs once when you press reset:
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(rLEDpin, OUTPUT);
-  pinMode(gLEDpin, OUTPUT);
-  pinMode(bLEDpin, OUTPUT);
+  // make the pushbutton's pin an input:
+  pinMode(Rpin, OUTPUT);
+  pinMode(Bpin, OUTPUT);
+  pinMode(Gpin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  // initialize serial communication at 9600 bits per second:
+  Serial.begin(9600);
 }
 
-// the loop function runs over and over again forever
+// the loop routine runs over and over again forever:
 void loop() {
-  digitalWrite(rLEDpin, HIGH);  // change state of the LED by setting the pin to the HIGH voltage level
-  digitalWrite(gLEDpin, LOW);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
+  // read the input pin:
+  buttonState = digitalRead(buttonPin);
+  // print out the state of the button:
+  Serial.print("Current Color: ");
+  Serial.println(currentcolor);
 
-  digitalWrite(rLEDpin, HIGH);   // change state of the LED by setting the pin to the LOW voltage level
-  digitalWrite(gLEDpin, HIGH);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
-  
-  digitalWrite(rLEDpin, LOW);  // change state of the LED by setting the pin to the HIGH voltage level
-  digitalWrite(gLEDpin, LOW);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
+  if(buttonState == HIGH && !ButtonPressed){
+    ledcolor += 1;
+    ButtonPressed = true;
+  }
 
-  digitalWrite(rLEDpin, HIGH);   // change state of the LED by setting the pin to the LOW voltage level
-  digitalWrite(gLEDpin, HIGH);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
+  if(buttonState == LOW && ButtonPressed){
+    ButtonPressed = false;
+  }
 
-  digitalWrite(rLEDpin, LOW);  // change state of the LED by setting the pin to the HIGH voltage level
-  digitalWrite(gLEDpin, HIGH);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= interval){
+    previousMillis = currentMillis;
+  }
+  if(ledState == LOW){
+    ledState = HIGH;
+  }
 
-  digitalWrite(rLEDpin, HIGH);   // change state of the LED by setting the pin to the LOW voltage level
-  digitalWrite(gLEDpin, HIGH);
-  digitalWrite(bLEDpin, HIGH);
-  delay(1000);                      // wait for a second
+  else{
+    ledState =LOW;
+  }
+
+  if(ledcolor == 0){
+    digitalWrite(Rpin, HIGH);
+    digitalWrite(Bpin, HIGH);
+    digitalWrite(Gpin, HIGH);
+  }
+
+  else if(ledcolor == 1){
+    currentcolor = "Red";
+    if(ledState == LOW){
+      digitalWrite(Rpin, LOW);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 2){
+    currentcolor = "Green";
+    if(ledState == LOW){
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, LOW);
+      digitalWrite(Gpin, HIGH);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 3){
+    currentcolor = "Blue";
+    if(ledState == LOW){
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, LOW);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+   else if(ledcolor == 4){
+    currentcolor = "Yellow";
+    if(ledState == LOW){
+      digitalWrite(Rpin, LOW);
+      digitalWrite(Bpin, LOW);
+      digitalWrite(Gpin, HIGH);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 5){
+    currentcolor = "Cyan";
+    if(ledState == LOW){
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, LOW);
+      digitalWrite(Gpin, LOW);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 6){
+    currentcolor = "Purple";
+    if(ledState == LOW){
+      digitalWrite(Rpin, LOW);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, LOW);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 7){
+    currentcolor = "White";
+    if(ledState == LOW){
+      digitalWrite(Rpin, LOW);
+      digitalWrite(Bpin, LOW);
+      digitalWrite(Gpin, LOW);
+    }
+    else{
+      digitalWrite(Rpin, HIGH);
+      digitalWrite(Bpin, HIGH);
+      digitalWrite(Gpin, HIGH);
+    }
+  }
+
+  else if(ledcolor == 8){
+    ledcolor = 0;
+  }
+
+  //Serial.println(buttonState);
+  //delay(1);  // delay in between reads for stability
 }
